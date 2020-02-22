@@ -21,6 +21,9 @@ namespace CroissantApi.Controllers
         }
 
         // GET: api/User
+        /// <summary>
+        /// Get all users.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
