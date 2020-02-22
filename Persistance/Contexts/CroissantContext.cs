@@ -1,6 +1,7 @@
+using CroissantApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CroissantApi.Models
+namespace CroissantApi.Persistence.Context
 {
     public class CroissantContext : DbContext
     {

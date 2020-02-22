@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CroissantApi.Models;
+using CroissantApi.Persistence.Context;
 
 namespace CroissantApi.Controllers
 {

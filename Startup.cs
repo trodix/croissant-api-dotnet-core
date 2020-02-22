@@ -4,7 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
+using CroissantApi.Domain.Repositories;
+using CroissantApi.Domain.Services;
 using CroissantApi.Models;
+using CroissantApi.Persistence.Context;
+using CroissantApi.Persistence.Repositories;
+using CroissantApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +37,12 @@ namespace CroissantApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<CroissantContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
+            
+            services.AddAutoMapper(typeof(Startup));
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -43,7 +55,6 @@ namespace CroissantApi
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddDbContext<CroissantContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

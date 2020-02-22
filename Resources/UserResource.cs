@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
+using CroissantApi.Models;
 
-namespace CroissantApi.Models
+namespace CroissantApi.Resources
 {
-    public class User
+
+    public class UserResource
     {
         public int Id { get; set; }
 
         public Team Team { get; set; }
-
-        public int TeamId { get; set; }
 
         public string Lastname { get; set; }
 
@@ -18,6 +18,5 @@ namespace CroissantApi.Models
         public DateTime BirthDate { get; set; }
 
         public ICollection<UserRule> UserRules { get; set; }
-
     }
 }
