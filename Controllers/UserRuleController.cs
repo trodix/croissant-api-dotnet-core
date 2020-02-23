@@ -13,6 +13,7 @@ namespace CroissantApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class UserRuleController : ControllerBase
     {
         private readonly IUserRuleService _userRuleService;
