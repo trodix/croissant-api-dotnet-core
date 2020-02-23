@@ -9,6 +9,7 @@ namespace CroissantApi.Mapping
         public ResourceToModelProfile()
         {
             CreateMap<SaveUserResource, User>();
+            CreateMap<SaveUserRuleResource, UserRule>();
         }
     }
 }

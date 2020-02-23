@@ -7,5 +7,8 @@ namespace CroissantApi.Domain.Repositories
     public interface IUserRuleRepository
     {
          Task<IEnumerable<UserRule>> ListAsync();
+         Task<UserRule> FindByIdAsync(int userId, int RuleId);
+         Task<IEnumerable<UserRule>> FindByUserIdAsync(int userId);
+         Task AddAsync(int userId, UserRule userRule);
     }
 }

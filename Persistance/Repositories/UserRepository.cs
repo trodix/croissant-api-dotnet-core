@@ -16,8 +16,8 @@ namespace CroissantApi.Persistence.Repositories
         public async Task<IEnumerable<User>> ListAsync()
         {
             return await _context.Users
-                                 .AsNoTracking()
-                                 .ToListAsync();
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<User> FindByIdAsync(int id)

@@ -40,7 +40,7 @@ namespace CroissantApi.Controllers
 
         // GET: api/User/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserResource>> GetUser(int id)
         {
             var user = await _userService.FindAsync(id);
 
