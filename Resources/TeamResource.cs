@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using CroissantApi.Models;
 
-namespace CroissantApi.Models
+namespace CroissantApi.Resources
 {
-    public class Team
+
+    public class TeamResource
     {
         public int Id { get; set; }
 

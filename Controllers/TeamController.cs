@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CroissantApi.Models;
-using CroissantApi.Persistence.Context;
+using AutoMapper;
+using CroissantApi.Resources;
+using CroissantApi.Extensions;
+using CroissantApi.Domain.Services;
 
 namespace CroissantApi.Controllers
 {
@@ -14,97 +17,100 @@ namespace CroissantApi.Controllers
     [ApiController]
     public class TeamController : ControllerBase
     {
-        private readonly CroissantContext _context;
+        private readonly ITeamService _teamService;
+        private readonly IMapper _mapper;
 
-        public TeamController(CroissantContext context)
+        public TeamController(ITeamService teamService, IMapper mapper)
         {
-            _context = context;
+            _teamService = teamService;
+            _mapper = mapper;
         }
 
         // GET: api/Team
+        /// <summary>
+        /// Get all teams.
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Team>>> GetTeams()
+        public async Task<ActionResult<IEnumerable<TeamResource>>> GetTeams()
         {
-            return await _context.Teams.ToListAsync();
+            var teams = await _teamService.ListAsync();
+            var resources = _mapper.Map<IEnumerable<Team>, IEnumerable<TeamResource>>(teams);
+            return Ok(resources);
         }
 
         // GET: api/Team/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Team>> GetTeam(int id)
+        public async Task<ActionResult<TeamResource>> GetTeam(int id)
         {
-            var team = await _context.Teams.FindAsync(id);
+            var team = await _teamService.FindAsync(id);
 
             if (team == null)
             {
                 return NotFound();
             }
 
-            return team;
+            var resources = _mapper.Map<Team, TeamResource>(team);
+
+            return Ok(resources);
         }
 
         // PUT: api/Team/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTeam(int id, Team team)
+        public async Task<IActionResult> PutTeam(int id, [FromBody] SaveTeamResource resource)
         {
-            if (id != team.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.GetErrorMessages());
             }
 
-            _context.Entry(team).State = EntityState.Modified;
+            var team = _mapper.Map<SaveTeamResource, Team>(resource);
+            var result = await _teamService.UpdateAsync(id, team);
 
-            try
+            if (!result.Success)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TeamExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(result.Message);
             }
 
-            return NoContent();
+            var teamResource = _mapper.Map<Team, TeamResource>(result.Team);
+            return Ok(teamResource);
         }
 
         // POST: api/Team
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Team>> PostTeam(Team team)
+        public async Task<IActionResult> PostTeam([FromBody] SaveTeamResource resource)
         {
-            _context.Teams.Add(team);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }
+            var team = _mapper.Map<SaveTeamResource, Team>(resource);
+            var result = await _teamService.SaveAsync(team);
 
-            return CreatedAtAction("GetTeam", new { id = team.Id }, team);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            var teamResource = _mapper.Map<Team, TeamResource>(result.Team);
+            return Ok(teamResource);
         }
 
         // DELETE: api/Team/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Team>> DeleteTeam(int id)
+        public async Task<IActionResult> DeleteTeam(int id)
         {
-            var team = await _context.Teams.FindAsync(id);
-            if (team == null)
+            var result = await _teamService.DeleteAsync(id);
+
+            if (!result.Success)
             {
-                return NotFound();
+                return BadRequest(result.Message);
             }
 
-            _context.Teams.Remove(team);
-            await _context.SaveChangesAsync();
-
-            return team;
-        }
-
-        private bool TeamExists(int id)
-        {
-            return _context.Teams.Any(e => e.Id == id);
+            return NoContent();
         }
     }
 }
