@@ -16,7 +16,26 @@ namespace CroissantApi.Persistence.Context
                 .WithMany(t => t.Users)
                 .HasForeignKey(u => u.TeamId);
 
+            // modelBuilder.Entity<User>().HasData
+            // (
+            //     new User { 
+            //         Id = 1,
+            //         Lastname = "Vallet", 
+            //         Firstname = "Sébastien",
+            //         BirthDate = new System.DateTime(1997, 09, 18)
+            //     }
+            // );
+
             modelBuilder.Entity<UserRule>().HasKey(ur => new { ur.UserId, ur.RuleId });
+        
+            // modelBuilder.Entity<UserRule>().HasData
+            // (
+            //     new UserRule { 
+            //         UserId = 1, 
+            //         RuleId = 1,
+            //         CoinsQuantity = 1
+            //     }
+            // );
         }
 
         public DbSet<Team> Teams { get; set; }
