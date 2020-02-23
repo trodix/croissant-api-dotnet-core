@@ -1,16 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using CroissantApi.Models;
-using CroissantApi.Persistence.Context;
 using AutoMapper;
 using CroissantApi.Resources;
 using CroissantApi.Extensions;
 using CroissantApi.Domain.Services;
+using Microsoft.AspNetCore.Http;
+using System.Net.Mime;
 
 namespace CroissantApi.Controllers
 {
@@ -27,8 +24,11 @@ namespace CroissantApi.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Rule
+        /// <summary>
+        /// Get all rules. 
+        /// </summary>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<RuleResource>>> GetRule()
         {
             var rules = await _ruleService.ListAsync();
@@ -36,8 +36,12 @@ namespace CroissantApi.Controllers
             return Ok(resources);
         }
 
-        // GET: api/Rule/5
+        /// <summary>
+        /// Get one rule by id. 
+        /// </summary>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RuleResource>> GetRule(int id)
         {
             var rule = await _ruleService.FindAsync(id);
@@ -52,10 +56,13 @@ namespace CroissantApi.Controllers
             return Ok(resources);
         }
 
-        // PUT: api/Rule/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// update a rule. 
+        /// </summary>
         [HttpPut("{id}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutRule(int id, [FromBody] SaveRuleResource resource)
         {
             if (!ModelState.IsValid)
@@ -72,13 +79,16 @@ namespace CroissantApi.Controllers
             }
 
             var ruleResource = _mapper.Map<Rule, RuleResource>(result.Rule);
-            return Ok(ruleResource);
+            return NoContent();
         }
 
-        // POST: api/Rule
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Create a rule. 
+        /// </summary>
         [HttpPost]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostRule([FromBody] SaveRuleResource resource)
         {
             if (!ModelState.IsValid)
@@ -94,11 +104,16 @@ namespace CroissantApi.Controllers
             }
 
             var ruleResource = _mapper.Map<Rule, RuleResource>(result.Rule);
-            return Ok(ruleResource);
+            
+            return CreatedAtAction(nameof(GetRule), new { id = ruleResource.Id }, ruleResource);
         }
 
-        // DELETE: api/Rule/5
+        /// <summary>
+        /// Delete a rule. 
+        /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteRule(int id)
         {
             var result = await _ruleService.DeleteAsync(id);

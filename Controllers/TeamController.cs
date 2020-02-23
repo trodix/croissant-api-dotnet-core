@@ -1,15 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using CroissantApi.Models;
 using AutoMapper;
 using CroissantApi.Resources;
 using CroissantApi.Extensions;
 using CroissantApi.Domain.Services;
+using System.Net.Mime;
 
 namespace CroissantApi.Controllers
 {
@@ -26,11 +24,11 @@ namespace CroissantApi.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Team
         /// <summary>
         /// Get all teams.
         /// </summary>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TeamResource>>> GetTeams()
         {
             var teams = await _teamService.ListAsync();
@@ -38,8 +36,12 @@ namespace CroissantApi.Controllers
             return Ok(resources);
         }
 
-        // GET: api/Team/5
+        /// <summary>
+        /// Get one team by id. 
+        /// </summary>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<TeamResource>> GetTeam(int id)
         {
             var team = await _teamService.FindAsync(id);
@@ -54,10 +56,13 @@ namespace CroissantApi.Controllers
             return Ok(resources);
         }
 
-        // PUT: api/Team/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// update a team. 
+        /// </summary>
         [HttpPut("{id}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutTeam(int id, [FromBody] SaveTeamResource resource)
         {
             if (!ModelState.IsValid)
@@ -74,13 +79,16 @@ namespace CroissantApi.Controllers
             }
 
             var teamResource = _mapper.Map<Team, TeamResource>(result.Team);
-            return Ok(teamResource);
+            return NoContent();
         }
 
-        // POST: api/Team
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Create a team. 
+        /// </summary>
         [HttpPost]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostTeam([FromBody] SaveTeamResource resource)
         {
             if (!ModelState.IsValid)
@@ -96,11 +104,16 @@ namespace CroissantApi.Controllers
             }
 
             var teamResource = _mapper.Map<Team, TeamResource>(result.Team);
-            return Ok(teamResource);
+            return CreatedAtAction(nameof(GetTeam), new { id = teamResource.Id }, teamResource);
+
         }
 
-        // DELETE: api/Team/5
+        /// <summary>
+        /// Delete a team. 
+        /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteTeam(int id)
         {
             var result = await _teamService.DeleteAsync(id);

@@ -1,16 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using CroissantApi.Models;
-using CroissantApi.Persistence.Context;
 using AutoMapper;
 using CroissantApi.Resources;
 using CroissantApi.Domain.Services;
 using CroissantApi.Extensions;
+using System.Net.Mime;
 
 namespace CroissantApi.Controllers
 {
@@ -27,8 +24,11 @@ namespace CroissantApi.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/UserRule
+        /// <summary>
+        /// Get all user rules. 
+        /// </summary>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<UserRuleResource>>> GetUserRulesAll()
         {
             var userRules = await _userRuleService.ListAsync();
@@ -36,8 +36,12 @@ namespace CroissantApi.Controllers
             return Ok(resources);
         }
 
-        // GET: api/UserRule/users/5/rules/2
+        /// <summary>
+        /// Get one specific rule for a specific user. 
+        /// </summary>
         [HttpGet("users/{userId}/rules/{ruleId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserRuleResource>> GetUserRule(int userId, int ruleId)
         {
             var userRule = await _userRuleService.FindAsync(userId, ruleId);
@@ -52,8 +56,11 @@ namespace CroissantApi.Controllers
             return Ok(resources);
         }
 
-        // GET: api/UserRule/users/5/rules
+        /// <summary>
+        /// Get all rules for a specific user. 
+        /// </summary>
         [HttpGet("users/{userId}/rules")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<UserRuleResource>> GetUserRules(int userId)
         {
             var userRules = await _userRuleService.FindByUserIdAsync(userId);
@@ -61,10 +68,13 @@ namespace CroissantApi.Controllers
             return Ok(resources);
         }
 
-        // PUT: api/UserRule/users/5/rules/2
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// update a rule for a specific user. 
+        /// </summary>
         [HttpPut("users/{userId}/rules/{ruleId}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutUserRule(int userId, int ruleId, [FromBody] UpdateUserRuleResource resource)
         {
             if (!ModelState.IsValid)
@@ -84,10 +94,13 @@ namespace CroissantApi.Controllers
             return Ok(userRuleResource);
         }
 
-        // POST: api/UserRule
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Create a rule for a specific user. 
+        /// </summary>
         [HttpPost("users/{userId}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostUserRule(int userId, [FromBody] SaveUserRuleResource resource)
         {
             if (!ModelState.IsValid)
@@ -103,11 +116,19 @@ namespace CroissantApi.Controllers
             }
 
             var userRuleResource = _mapper.Map<UserRule, UserRuleResource>(result.UserRule);
-            return Ok(userRuleResource);
+            
+            return CreatedAtAction(
+                nameof(GetUserRule), 
+                new { userId = userRuleResource.User.Id, ruleId = userRuleResource.Rule.Id }, 
+                userRuleResource);
         }
 
-        // DELETE: api/UserRule/users/5/rules/2
+        /// <summary>
+        /// Delete a rule for a specific user. 
+        /// </summary>
         [HttpDelete("users/{userId}/rules/{ruleId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserRule>> DeleteUserRule(int userId, int ruleId)
         {
             var result = await _userRuleService.DeleteByUserIdAsync(userId, ruleId);
