@@ -26,13 +26,25 @@ namespace CroissantApi.Persistence.Repositories
 
         public async Task<IEnumerable<UserRule>> FindByUserIdAsync(int userId)
         {
-            return await _context.UserRules.Where(ur => ur.UserId == userId).ToListAsync();
+            return await _context.UserRules
+                .Where(ur => ur.UserId == userId)
+                .ToListAsync();
         }
 
         public async Task AddAsync(int userId, UserRule userRule)
         {
             userRule.UserId = userId;
             await _context.UserRules.AddAsync(userRule);
+        }
+
+        public void Update(UserRule userRule)
+        {
+            _context.UserRules.Update(userRule);
+        }
+
+        public void Remove(UserRule userRule)
+        {
+            _context.UserRules.Remove(userRule);
         }
     }
 }

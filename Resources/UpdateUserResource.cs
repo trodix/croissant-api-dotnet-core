@@ -1,8 +1,7 @@
 namespace CroissantApi.Resources
 {
-    public class SaveUserRuleResource
+    public class UpdateUserRuleResource
     {
-        public int RuleId { get; set; }
         public int CoinsQuantity { get; set; }
     }
 }

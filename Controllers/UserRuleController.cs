@@ -61,37 +61,28 @@ namespace CroissantApi.Controllers
             return Ok(resources);
         }
 
-        // // PUT: api/UserRule/5
-        // // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // // more details see https://aka.ms/RazorPagesCRUD.
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutUserRule(int id, UserRule userRule)
-        // {
-        //     if (id != userRule.UserId)
-        //     {
-        //         return BadRequest();
-        //     }
+        // PUT: api/UserRule/users/5/rules/2
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
+        [HttpPut("users/{userId}/rules/{ruleId}")]
+        public async Task<IActionResult> PutUserRule(int userId, int ruleId, [FromBody] UpdateUserRuleResource resource)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }
 
-        //     _context.Entry(userRule).State = EntityState.Modified;
+            var userRule = _mapper.Map<UpdateUserRuleResource, UserRule>(resource);
+            var result = await _userRuleService.UpdateAsync(userId, ruleId, userRule);
 
-        //     try
-        //     {
-        //         await _context.SaveChangesAsync();
-        //     }
-        //     catch (DbUpdateConcurrencyException)
-        //     {
-        //         if (!UserRuleExists(id))
-        //         {
-        //             return NotFound();
-        //         }
-        //         else
-        //         {
-        //             throw;
-        //         }
-        //     }
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
 
-        //     return NoContent();
-        // }
+            var userRuleResource = _mapper.Map<UserRule, UserRuleResource>(result.UserRule);
+            return Ok(userRuleResource);
+        }
 
         // POST: api/UserRule
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
@@ -115,25 +106,18 @@ namespace CroissantApi.Controllers
             return Ok(userRuleResource);
         }
 
-        // // DELETE: api/UserRule/5
-        // [HttpDelete("{id}")]
-        // public async Task<ActionResult<UserRule>> DeleteUserRule(int id)
-        // {
-        //     var userRule = await _context.UserRules.FindAsync(id);
-        //     if (userRule == null)
-        //     {
-        //         return NotFound();
-        //     }
+        // DELETE: api/UserRule/users/5/rules/2
+        [HttpDelete("users/{userId}/rules/{ruleId}")]
+        public async Task<ActionResult<UserRule>> DeleteUserRule(int userId, int ruleId)
+        {
+            var result = await _userRuleService.DeleteByUserIdAsync(userId, ruleId);
 
-        //     _context.UserRules.Remove(userRule);
-        //     await _context.SaveChangesAsync();
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
 
-        //     return userRule;
-        // }
-
-        // private bool UserRuleExists(int id)
-        // {
-        //     return _context.UserRules.Any(e => e.UserId == id);
-        // }
+            return NoContent();
+        }
     }
 }

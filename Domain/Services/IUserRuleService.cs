@@ -11,7 +11,7 @@ namespace CroissantApi.Domain.Services
         Task<UserRule> FindAsync(int userId, int ruleId);
         Task<IEnumerable<UserRule>> FindByUserIdAsync(int userId);
         Task<UserRuleResponse> SaveAsync(int userId, UserRule userRule);
-        //  Task<UserRuleResponse> UpdateAsync(int id, UserRule user);
-        //  Task<UserRuleResponse> DeleteAsync(int id);
+        Task<UserRuleResponse> UpdateAsync(int userId, int ruleId, UserRule userRule);
+        Task<UserRuleResponse> DeleteByUserIdAsync(int userId, int ruleId);
     }
 }

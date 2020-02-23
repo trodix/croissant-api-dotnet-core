@@ -49,5 +49,51 @@ namespace CroissantApi.Services
                 return new UserRuleResponse($"An error occurred when saving the user rule: {ex.Message}");
             }
         }
+
+        public async Task<UserRuleResponse> UpdateAsync(int userId, int ruleId, UserRule userRule)
+        {
+            var existingUserRule = await _userRuleRepository.FindByIdAsync(userId, ruleId);
+
+            if (existingUserRule == null)
+            {
+                return new UserRuleResponse("User rule not found.");
+            }
+
+            existingUserRule.CoinsQuantity = userRule.CoinsQuantity;
+
+            try
+            {
+                _userRuleRepository.Update(existingUserRule);
+                await _unitOfWork.CompleteAsync();
+
+                return new UserRuleResponse(existingUserRule);
+            }
+            catch (Exception ex)
+            {
+                // Do some logging stuff
+                return new UserRuleResponse($"An error occurred when updating the user rule: {ex.Message}");
+            }
+        }
+
+        public async Task<UserRuleResponse> DeleteByUserIdAsync(int userId, int ruleId)
+        {
+            var existingUserRule = await _userRuleRepository.FindByIdAsync(userId, ruleId);
+
+            if (existingUserRule == null)
+                return new UserRuleResponse("User rule not found.");
+
+            try
+            {
+                _userRuleRepository.Remove(existingUserRule);
+                await _unitOfWork.CompleteAsync();
+
+                return new UserRuleResponse(existingUserRule);
+            }
+            catch (Exception ex)
+            {
+                // Do some logging stuff
+                return new UserRuleResponse($"An error occurred when deleting the user rule: {ex.Message}");
+            }
+        }
     }
 }
