@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using CroissantApi.Models;
 
-namespace CroissantApi.Models
+namespace CroissantApi.Resources
 {
-    public class Rule
+
+    public class RuleResource
     {
         public int Id { get; set; }
 

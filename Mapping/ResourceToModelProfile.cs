@@ -10,6 +10,8 @@ namespace CroissantApi.Mapping
         {
             CreateMap<SaveUserResource, User>();
             CreateMap<SaveUserRuleResource, UserRule>();
+            CreateMap<UpdateUserRuleResource, UserRule>();
+            CreateMap<SaveRuleResource, Rule>();
         }
     }
 }
