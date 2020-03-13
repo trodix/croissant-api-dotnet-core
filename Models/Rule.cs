@@ -17,5 +17,7 @@ namespace CroissantApi.Models
         public ICollection<Team> Teams { get; set; }
 
         public ICollection<UserRule> UserRules { get; set; }
+
+        public ICollection<TeamRule> TeamRules { get; set; }
     }
 }

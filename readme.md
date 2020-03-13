@@ -13,6 +13,11 @@
 
 - `dotnet watch run` for hot reload
 
+### Docker
+
+- `docker build -t croissant-api .`
+- `docker-compose up`
+
 Go to <https://localhost:5001/swagger> for API documentation
 
 Go to <https://localhost:5001/api> for API calls

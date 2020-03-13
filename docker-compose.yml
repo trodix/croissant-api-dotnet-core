@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  app:
+    image: croissant-api
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development  
+    depends_on:
+      - postgresql
+    ports:
+      - '8888:5001'
+    networks:
+      - network1
+  postgresql:
+    image: bitnami/postgresql:latest
+    environment:
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_DATABASE=dotnet_croissant
+    ports:
+      - '5432:5432'
+    networks: 
+      - network1
+
+networks: 
+  network1:

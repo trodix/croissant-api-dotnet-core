@@ -30,17 +30,37 @@ namespace CroissantApi.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("character varying(40)")
-                        .HasMaxLength(40);
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rule");
+                    b.ToTable("Rules");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CoinsCapacity = 1,
+                            Description = "Fais un Win+L sinon tu paie les croissants, tu as 1 chance !!!",
+                            Name = "Ton ordi !"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CoinsCapacity = 3,
+                            Description = "Quand tu as fini la journée, tu met ta chaise sur ta table, sinon tu paie les croissants. Tu as 3 chances.",
+                            Name = "La chaise !"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CoinsCapacity = 3,
+                            Description = "Quand tu sors tu ferme la porte derière toi, sinon tu paie les croissants. Tu as 3 chances.",
+                            Name = "La porte !"
+                        });
                 });
 
             modelBuilder.Entity("CroissantApi.Models.Team", b =>
@@ -51,9 +71,7 @@ namespace CroissantApi.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("character varying(40)")
-                        .HasMaxLength(40);
+                        .HasColumnType("text");
 
                     b.Property<int?>("RuleId")
                         .HasColumnType("integer");
@@ -63,6 +81,13 @@ namespace CroissantApi.Migrations
                     b.HasIndex("RuleId");
 
                     b.ToTable("Teams");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "CESI RIL B2 aka Croissanistan"
+                        });
                 });
 
             modelBuilder.Entity("CroissantApi.Models.User", b =>
@@ -89,6 +114,24 @@ namespace CroissantApi.Migrations
                     b.HasIndex("TeamId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BirthDate = new DateTime(1997, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Firstname = "Sébastien",
+                            Lastname = "Vallet",
+                            TeamId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BirthDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Firstname = "Sylvain",
+                            Lastname = "Bayon",
+                            TeamId = 1
+                        });
                 });
 
             modelBuilder.Entity("CroissantApi.Models.UserRule", b =>
@@ -107,6 +150,52 @@ namespace CroissantApi.Migrations
                     b.HasIndex("RuleId");
 
                     b.ToTable("UserRules");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RuleId = 1,
+                            CoinsQuantity = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RuleId = 3,
+                            CoinsQuantity = 2
+                        });
+                });
+
+            modelBuilder.Entity("CroissantApi.TeamRule", b =>
+                {
+                    b.Property<int>("TeamId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RuleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("TeamId", "RuleId");
+
+                    b.HasIndex("RuleId");
+
+                    b.ToTable("TeamRule");
+
+                    b.HasData(
+                        new
+                        {
+                            TeamId = 1,
+                            RuleId = 1
+                        },
+                        new
+                        {
+                            TeamId = 1,
+                            RuleId = 2
+                        },
+                        new
+                        {
+                            TeamId = 1,
+                            RuleId = 3
+                        });
                 });
 
             modelBuilder.Entity("CroissantApi.Models.Team", b =>
@@ -136,6 +225,21 @@ namespace CroissantApi.Migrations
                     b.HasOne("CroissantApi.Models.User", "User")
                         .WithMany("UserRules")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CroissantApi.TeamRule", b =>
+                {
+                    b.HasOne("CroissantApi.Models.Rule", "Rule")
+                        .WithMany("TeamRules")
+                        .HasForeignKey("RuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CroissantApi.Models.Team", "Team")
+                        .WithMany("TeamRules")
+                        .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
