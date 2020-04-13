@@ -23,14 +23,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Supermarket.API.Extensions;
+using CroissantApi.Persistence.Seed;
 
 namespace CroissantApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -42,7 +45,12 @@ namespace CroissantApi
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
-            services.AddDbContext<CroissantContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            if (_env.IsProduction())
+            {
+                services.AddDbContext<CroissantContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            } else {
+                services.AddDbContext<CroissantContext>(opt => opt.UseInMemoryDatabase("DevelopmentDatabase"));
+            }
             
             services.AddAutoMapper(typeof(Startup));
             
@@ -60,7 +68,7 @@ namespace CroissantApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -73,10 +81,18 @@ namespace CroissantApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Croissant API V1");
             });
 
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
+
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var ctx = scope.ServiceProvider.GetService<CroissantContext>();
+
+                    AppSeed SeedBuilder = new AppSeed(ctx);
+                    SeedBuilder.LoadSeeds();
+                }
+             }
 
             app.UseHttpsRedirection();
 
