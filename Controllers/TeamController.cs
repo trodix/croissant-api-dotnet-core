@@ -30,10 +30,10 @@ namespace CroissantApi.Controllers
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<TeamResource>>> GetTeams()
+        public async Task<ActionResult<IEnumerable<TeamWithUsersResource>>> GetTeams()
         {
             var teams = await _teamService.ListAsync();
-            var resources = _mapper.Map<IEnumerable<Team>, IEnumerable<TeamResource>>(teams);
+            var resources = _mapper.Map<IEnumerable<Team>, IEnumerable<TeamWithUsersResource>>(teams);
             return Ok(resources);
         }
 
@@ -43,7 +43,7 @@ namespace CroissantApi.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<TeamResource>> GetTeam(int id)
+        public async Task<ActionResult<TeamWithUsersResource>> GetTeam(int id)
         {
             var team = await _teamService.FindAsync(id);
 
@@ -52,7 +52,7 @@ namespace CroissantApi.Controllers
                 return NotFound();
             }
 
-            var resources = _mapper.Map<Team, TeamResource>(team);
+            var resources = _mapper.Map<Team, TeamWithUsersResource>(team);
 
             return Ok(resources);
         }
@@ -62,9 +62,9 @@ namespace CroissantApi.Controllers
         /// </summary>
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutTeam(int id, [FromBody] SaveTeamResource resource)
+        public async Task<ActionResult<TeamWithUsersResource>> PutTeam(int id, [FromBody] SaveTeamResource resource)
         {
             if (!ModelState.IsValid)
             {
@@ -79,8 +79,8 @@ namespace CroissantApi.Controllers
                 return BadRequest(result.Message);
             }
 
-            var teamResource = _mapper.Map<Team, TeamResource>(result.Team);
-            return NoContent();
+            var teamResource = _mapper.Map<Team, TeamWithUsersResource>(result.Team);
+            return Ok(teamResource);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace CroissantApi.Controllers
                 return BadRequest(result.Message);
             }
 
-            var teamResource = _mapper.Map<Team, TeamResource>(result.Team);
+            var teamResource = _mapper.Map<Team, TeamWithUsersResource>(result.Team);
             return CreatedAtAction(nameof(GetTeam), new { id = teamResource.Id }, teamResource);
 
         }

@@ -62,7 +62,7 @@ namespace CroissantApi.Controllers
         /// </summary>
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutUser(int id, [FromBody] SaveUserResource resource)
         {
@@ -80,7 +80,7 @@ namespace CroissantApi.Controllers
             }
 
             var userResource = _mapper.Map<User, UserResource>(result.User);
-            return NoContent();
+            return Ok(userResource);
         }
 
         /// <summary>

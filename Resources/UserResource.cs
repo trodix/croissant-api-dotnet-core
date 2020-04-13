@@ -9,7 +9,7 @@ namespace CroissantApi.Resources
     {
         public int Id { get; set; }
 
-        public Team Team { get; set; }
+        public TeamResource Team { get; set; }
 
         public string Lastname { get; set; }
 

@@ -30,8 +30,8 @@ namespace CroissantApi.Persistence.Context
             modelBuilder
                 .Entity<User>()
                 .HasOne<Team>(u => u.Team)
-                .WithMany(t => t.Users);
-                //.HasForeignKey(u => u.TeamId);
+                .WithMany(t => t.Users)
+                .HasForeignKey(u => u.TeamId);
         }
     }
 }
