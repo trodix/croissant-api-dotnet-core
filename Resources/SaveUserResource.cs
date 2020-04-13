@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using CroissantApi.Models;
 
 namespace CroissantApi.Resources
 {
@@ -15,5 +16,7 @@ namespace CroissantApi.Resources
 
         [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
+        
+        public Team Team { get; set; }
     }
 }

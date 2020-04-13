@@ -4,6 +4,7 @@ using CroissantApi.Domain.Repositories;
 using CroissantApi.Models;
 using CroissantApi.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace CroissantApi.Persistence.Repositories
 {
@@ -17,22 +18,27 @@ namespace CroissantApi.Persistence.Repositories
         {
             return await _context.Users
                 .AsNoTracking()
+                .Include(u => u.Team)
                 .ToListAsync();
         }
 
         public async Task<User> FindByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
-        }
-
-        public void Update(User user)
-        {
-            _context.Users.Update(user);
+            return await _context.Users.Where(u => u.Id == id).Include(u => u.Team).FirstOrDefaultAsync();
         }
 
         public async Task AddAsync(User user)
         {
+            _context.Attach(user).State = EntityState.Added;
             await _context.Users.AddAsync(user);
+        }
+
+        public void Update(User user)
+        {
+            _context.Attach(user).State = EntityState.Modified;
+            _context.Entry(user).Reference(u => u.Team).IsModified = true;
+
+            _context.Users.Update(user);
         }
 
         public void Remove(User user)

@@ -24,6 +24,8 @@ namespace CroissantApi.Persistence.Seed
 
         private void MakeSeeds()
         {
+            _context.Database.EnsureCreated();
+
             Rule r1 = _context.Rules.Add(new Rule() { 
                 Id = 1,
                 Name = "Ton ordi !", 

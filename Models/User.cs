@@ -9,7 +9,7 @@ namespace CroissantApi.Models
 
         public Team Team { get; set; }
 
-        public int TeamId { get; set; }
+        // public int TeamId { get; set; }
 
         public string Lastname { get; set; }
 

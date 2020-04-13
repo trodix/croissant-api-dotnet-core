@@ -49,17 +49,23 @@ namespace CroissantApi
             {
                 services.AddDbContext<CroissantContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             } else {
-                services.AddDbContext<CroissantContext>(opt => opt.UseInMemoryDatabase("DevelopmentDatabase"));
+                // services.AddDbContext<CroissantContext>(opt => opt.UseInMemoryDatabase("DevelopmentDatabase"));
+                services.AddDbContext<CroissantContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             }
             
             services.AddAutoMapper(typeof(Startup));
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserRuleRepository, UserRuleRepository>();
+            services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<IRuleRepository,RuleRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRuleService, UserRuleService>();
+            services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<IRuleService, RuleService>();
             
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -85,13 +91,13 @@ namespace CroissantApi
             {
                 app.UseDeveloperExceptionPage();
 
-                using (var scope = app.ApplicationServices.CreateScope())
-                {
-                    var ctx = scope.ServiceProvider.GetService<CroissantContext>();
+                // using (var scope = app.ApplicationServices.CreateScope())
+                // {
+                //     var ctx = scope.ServiceProvider.GetService<CroissantContext>();
 
-                    AppSeed SeedBuilder = new AppSeed(ctx);
-                    SeedBuilder.LoadSeeds();
-                }
+                //     AppSeed SeedBuilder = new AppSeed(ctx);
+                //     SeedBuilder.LoadSeeds();
+                // }
              }
 
             app.UseHttpsRedirection();
