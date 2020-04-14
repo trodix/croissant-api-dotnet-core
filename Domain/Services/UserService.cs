@@ -11,11 +11,13 @@ namespace CroissantApi.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ITeamRepository _teamRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public UserService(IUserRepository userRepository, ITeamRepository teamRepository, IUnitOfWork unitOfWork)
         {
             this._userRepository = userRepository;
+            this._teamRepository = teamRepository;
             this._unitOfWork = unitOfWork;
         }
 
@@ -31,6 +33,13 @@ namespace CroissantApi.Services
 
         public async Task<UserResponse> SaveAsync(User user)
         {
+            var existingTeam = await _teamRepository.FindByIdAsync(user.TeamId);
+
+            if (existingTeam == null)
+            {
+                return new UserResponse("The requested team was not found.");
+            }
+
             try
             {
                 await _userRepository.AddAsync(user);
@@ -48,15 +57,22 @@ namespace CroissantApi.Services
         public async Task<UserResponse> UpdateAsync(int id, User user)
         {
             var existingUser = await _userRepository.FindByIdAsync(id);
+            var existingTeam = await _teamRepository.FindByIdAsync(user.TeamId);
 
             if (existingUser == null)
             {
                 return new UserResponse("User not found.");
             }
 
+            if (existingTeam == null)
+            {
+                return new UserResponse("The requested team was not found.");
+            }
+
             existingUser.Lastname = user.Lastname;
             existingUser.Firstname = user.Firstname;
             existingUser.BirthDate = user.BirthDate;
+            existingUser.Team = existingTeam;
 
             try
             {

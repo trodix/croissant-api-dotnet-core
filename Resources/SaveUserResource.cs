@@ -17,6 +17,6 @@ namespace CroissantApi.Resources
         [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
         
-        public Team Team { get; set; }
+        public int TeamId { get; set; }
     }
 }
