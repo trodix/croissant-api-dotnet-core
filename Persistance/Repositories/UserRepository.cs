@@ -19,12 +19,19 @@ namespace CroissantApi.Persistence.Repositories
             return await _context.Users
                 .AsNoTracking()
                 .Include(u => u.Team)
+                .Include(u => u.UserRules)
+                .ThenInclude(ur => ur.Rule)
                 .ToListAsync();
         }
 
         public async Task<User> FindByIdAsync(int id)
         {
-            return await _context.Users.Where(u => u.Id == id).Include(u => u.Team).FirstOrDefaultAsync();
+            return await _context.Users
+                .Where(u => u.Id == id)
+                .Include(u => u.Team)
+                .Include(u => u.UserRules)
+                .ThenInclude(ur => ur.Rule)
+                .FirstOrDefaultAsync();
         }
 
         public async Task AddAsync(User user)

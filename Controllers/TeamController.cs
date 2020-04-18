@@ -30,10 +30,10 @@ namespace CroissantApi.Controllers
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<TeamWithUsersResource>>> GetTeams()
+        public async Task<ActionResult<IEnumerable<TeamResource>>> GetTeams()
         {
             var teams = await _teamService.ListAsync();
-            var resources = _mapper.Map<IEnumerable<Team>, IEnumerable<TeamWithUsersResource>>(teams);
+            var resources = _mapper.Map<IEnumerable<Team>, IEnumerable<TeamResource>>(teams);
             return Ok(resources);
         }
 

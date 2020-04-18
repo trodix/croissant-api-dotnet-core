@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using CroissantApi.Models;
-
 namespace CroissantApi.Resources
 {
-
-    public class TeamResource
+    public class TeamLightResource
     {
         public int Id { get; set; }
-
         public string Name { get; set; }
     }
 }

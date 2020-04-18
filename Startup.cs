@@ -58,12 +58,10 @@ namespace CroissantApi
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserRuleRepository, UserRuleRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<IRuleRepository,RuleRepository>();
 
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUserRuleService, UserRuleService>();
             services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IRuleService, RuleService>();
             
