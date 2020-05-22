@@ -11,12 +11,14 @@ namespace CroissantApi.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IRuleRepository _ruleRepository;
         private readonly ITeamRepository _teamRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUserRepository userRepository, ITeamRepository teamRepository, IUnitOfWork unitOfWork)
+        public UserService(IUserRepository userRepository, IRuleRepository ruleRepository, ITeamRepository teamRepository, IUnitOfWork unitOfWork)
         {
             this._userRepository = userRepository;
+            this._ruleRepository = ruleRepository;
             this._teamRepository = teamRepository;
             this._unitOfWork = unitOfWork;
         }
@@ -85,6 +87,59 @@ namespace CroissantApi.Services
             {
                 // Do some logging stuff
                 return new UserResponse($"An error occurred when updating the user: {ex.Message}");
+            }
+        }
+
+        public async Task<UserResponse> IncrementCoinQuantityAsync(int id, int ruleId)
+        {
+            var existingUser = await _userRepository.FindByIdAsync(id);
+            var existingRule = await _ruleRepository.FindByIdAsync(ruleId);
+
+            if (existingUser == null)
+                return new UserResponse("User not found.");
+
+            if (existingRule == null)
+                return new UserResponse("Rule not found.");
+
+            try
+            {
+                foreach (var item in existingUser.UserRules)
+                {
+                    if (item.RuleId == ruleId) {
+
+                        // Increment the coin counter
+                        item.CoinsQuantity += 1;
+
+                        if (item.CoinsQuantity == existingRule.CoinsCapacity)
+                        {
+                            // TODO send a mail to pay croissants
+
+                            // TODO add a new record in database to track the payment status
+
+                            // Note: next counter iteration will reset the coin counter (above)
+                        }
+
+                        if (item.CoinsQuantity > existingRule.CoinsCapacity)
+                        {
+                            // Reset the coin counter
+                            item.CoinsQuantity = 0;
+                        }
+                        
+                        _userRepository.Update(existingUser);
+                        await _unitOfWork.CompleteAsync();
+
+                        return new UserResponse(existingUser);
+                    }
+                }
+
+                // Rule not found in user collection rules
+                return new UserResponse("User did not subscribed to this rule.");
+
+            }
+            catch (Exception ex)
+            {
+                // Do some logging stuff
+                return new UserResponse($"An error occurred when deleting the user: {ex.Message}");
             }
         }
 

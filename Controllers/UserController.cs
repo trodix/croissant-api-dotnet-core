@@ -126,5 +126,30 @@ namespace CroissantApi.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// increment the user's rule coin quantity. 
+        /// </summary>
+        [HttpPut("{id}/rule/{ruleId}/increment")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutUserRuleCoinQuantity(int id, int ruleId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }
+
+            var result = await _userService.IncrementCoinQuantityAsync(id, ruleId);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            var userResource = _mapper.Map<User, UserResource>(result.User);
+            return Ok(userResource);
+        }
     }
 }

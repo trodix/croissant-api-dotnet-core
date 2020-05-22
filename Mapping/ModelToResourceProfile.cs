@@ -10,7 +10,6 @@ namespace CroissantApi.Mapping
         {
             CreateMap<User, UserResource>();
             CreateMap<User, UserLightResource>();
-            CreateMap<UserRule, UserRuleResource>();
             CreateMap<UserRule, UserRuleWithoutUserResource>();
             CreateMap<Rule, RuleResource>();
             CreateMap<Team, TeamResource>();

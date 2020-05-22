@@ -11,6 +11,7 @@ namespace CroissantApi.Domain.Services
          Task<User> FindAsync(int id);
          Task<UserResponse> SaveAsync(User user);
          Task<UserResponse> UpdateAsync(int id, User user);
+         Task<UserResponse> IncrementCoinQuantityAsync(int id, int ruleId);
          Task<UserResponse> DeleteAsync(int id);
     }
 }
