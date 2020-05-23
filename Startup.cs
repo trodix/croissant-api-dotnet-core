@@ -30,6 +30,8 @@ namespace CroissantApi
     public class Startup
     {
         private readonly IWebHostEnvironment _env;
+
+        readonly string ApiCorsPolicyName = "ApiCorsPolicyName";
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
@@ -69,6 +71,20 @@ namespace CroissantApi
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddCustomSwagger();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    ApiCorsPolicyName,
+                    builder => {
+                        builder
+                            .WithOrigins("http://localhost:3000")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                        ;
+                    }
+                );
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,15 +114,19 @@ namespace CroissantApi
                 // }
              }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers()
+                    .RequireCors(ApiCorsPolicyName)
+                ;
             });
         }
     }
