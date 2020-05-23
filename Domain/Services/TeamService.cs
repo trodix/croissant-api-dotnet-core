@@ -11,11 +11,13 @@ namespace CroissantApi.Services
     public class TeamService : ITeamService
     {
         private readonly ITeamRepository _teamRepository;
+        private readonly IRuleRepository _ruleRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public TeamService(ITeamRepository teamRepository, IUnitOfWork unitOfWork)
+        public TeamService(ITeamRepository teamRepository, IRuleRepository ruleRepository, IUnitOfWork unitOfWork)
         {
             this._teamRepository = teamRepository;
+            this._ruleRepository = ruleRepository;
             this._unitOfWork = unitOfWork;
         }
 
@@ -55,6 +57,22 @@ namespace CroissantApi.Services
             }
 
             existingTeam.Name = team.Name;
+
+            List<TeamRule> teamRules = new List<TeamRule>();
+
+            foreach(TeamRule tr in team.TeamRules)
+            {
+                var existingRule = await _ruleRepository.FindByIdAsync(tr.RuleId);
+
+                if (existingRule == null)
+                {
+                    return new TeamResponse("Rule not found.");
+                }
+
+                teamRules.Add(new TeamRule{Team = existingTeam, Rule = existingRule});
+            }
+
+            existingTeam.TeamRules = teamRules;
 
             try
             {

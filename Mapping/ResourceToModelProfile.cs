@@ -11,6 +11,8 @@ namespace CroissantApi.Mapping
             CreateMap<SaveUserResource, User>();
             CreateMap<SaveRuleResource, Rule>();
             CreateMap<SaveTeamResource, Team>();
+            CreateMap<UpdateTeamResource, Team>();
+            CreateMap<SaveTeamRuleResource, TeamRule>();
         }
     }
 }

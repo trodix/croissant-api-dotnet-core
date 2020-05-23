@@ -64,14 +64,14 @@ namespace CroissantApi.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<TeamWithUsersResource>> PutTeam(int id, [FromBody] SaveTeamResource resource)
+        public async Task<ActionResult<TeamWithUsersResource>> PutTeam(int id, [FromBody] UpdateTeamResource resource)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.GetErrorMessages());
             }
 
-            var team = _mapper.Map<SaveTeamResource, Team>(resource);
+            var team = _mapper.Map<UpdateTeamResource, Team>(resource);
             var result = await _teamService.UpdateAsync(id, team);
 
             if (!result.Success)
