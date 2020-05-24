@@ -71,13 +71,14 @@ namespace CroissantApi
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddCustomSwagger();
 
+            // Allow CORS on localhost:3000
             services.AddCors(options =>
             {
                 options.AddPolicy(
                     ApiCorsPolicyName,
                     builder => {
                         builder
-                            .WithOrigins("http://localhost:3000")
+                            .WithOrigins("http://localhost:3000", "https://localhost:3000")
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                         ;

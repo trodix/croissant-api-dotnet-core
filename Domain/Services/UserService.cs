@@ -35,12 +35,15 @@ namespace CroissantApi.Services
 
         public async Task<UserResponse> SaveAsync(User user)
         {
+
             var existingTeam = await _teamRepository.FindByIdAsync(user.TeamId);
 
             if (existingTeam == null)
             {
                 return new UserResponse("The requested team was not found.");
             }
+
+            user.UserRules = CreateRulesFromTeam(user, existingTeam);
 
             try
             {
@@ -75,6 +78,12 @@ namespace CroissantApi.Services
             existingUser.Firstname = user.Firstname;
             existingUser.BirthDate = user.BirthDate;
             existingUser.Team = existingTeam;
+
+            if (existingUser.TeamId != existingTeam.Id) {
+                // Update the UserRules if the Team change
+                existingUser.UserRules = CreateRulesFromTeam(user, existingTeam);
+            }
+            
 
             try
             {
@@ -162,6 +171,18 @@ namespace CroissantApi.Services
                 // Do some logging stuff
                 return new UserResponse($"An error occurred when deleting the user: {ex.Message}");
             }
+        }
+
+        private ICollection<UserRule> CreateRulesFromTeam(User user, Team team)
+        {
+            user.UserRules = new List<UserRule>();
+
+            foreach (var teamRule in team.TeamRules)
+            {
+                user.UserRules.Add(new UserRule{User = user, Rule = teamRule.Rule});
+            }
+
+            return user.UserRules;
         }
     }
 }
