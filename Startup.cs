@@ -78,7 +78,8 @@ namespace CroissantApi
                     ApiCorsPolicyName,
                     builder => {
                         builder
-                            .WithOrigins("http://localhost:3000", "https://localhost:3000")
+                            // .WithOrigins("http://localhost:3000", "https://localhost:3000")
+                            .AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                         ;
@@ -119,7 +120,13 @@ namespace CroissantApi
 
             app.UseRouting();
 
-            app.UseCors();
+            // app.UseCors(); // Not working without the lines bellow...
+            app.UseCors(
+                options => options.SetIsOriginAllowed(x => _ = true)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+            );
 
             app.UseAuthorization();
 
