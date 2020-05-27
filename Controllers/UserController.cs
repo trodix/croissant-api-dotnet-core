@@ -8,6 +8,7 @@ using CroissantApi.Resources;
 using CroissantApi.Extensions;
 using CroissantApi.Domain.Services;
 using System.Net.Mime;
+using System;
 
 namespace CroissantApi.Controllers
 {
@@ -142,6 +143,32 @@ namespace CroissantApi.Controllers
             }
 
             var result = await _userService.IncrementCoinQuantityAsync(id, ruleId);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            var userResource = _mapper.Map<User, UserResource>(result.User);
+            return Ok(userResource);
+        }
+
+        /// <summary>
+        /// define the date for user to pay croissants. 
+        /// </summary>
+        [HttpPut("{id}/rule/{ruleId}/payday")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutUserRuleNextPaymentDate(int id, int ruleId, [FromBody] UpdateNextPaymentDateResource resource)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }
+
+            var nextPaymentDate = resource.nextPaymentDate;
+            var result = await _userService.UpdateNextPaymentDateAsync(id, ruleId, nextPaymentDate);
 
             if (!result.Success)
             {

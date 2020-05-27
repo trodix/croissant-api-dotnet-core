@@ -114,16 +114,14 @@ namespace CroissantApi.Services
             {
                 foreach (var item in existingUser.UserRules)
                 {
-                    if (item.RuleId == ruleId) {
-
+                    if (item.RuleId == ruleId) 
+                    {
                         // Increment the coin counter
                         item.CoinsQuantity += 1;
 
                         if (item.CoinsQuantity == existingRule.CoinsCapacity)
                         {
-                            // TODO send a mail to pay croissants
-
-                            // TODO add a new record in database to track the payment status
+                            // TODO add a new record in database to track the payment status (not payed here)
 
                             // Note: next counter iteration will reset the coin counter (above)
                         }
@@ -132,6 +130,7 @@ namespace CroissantApi.Services
                         {
                             // Reset the coin counter
                             item.CoinsQuantity = 0;
+                            item.nextPaymentDate = null;
                         }
                         
                         _userRepository.Update(existingUser);
@@ -149,6 +148,48 @@ namespace CroissantApi.Services
             {
                 // Do some logging stuff
                 return new UserResponse($"An error occurred when deleting the user: {ex.Message}");
+            }
+        }
+
+        public async Task<UserResponse> UpdateNextPaymentDateAsync(int id, int ruleId, DateTime nextPaymentDate)
+        {
+            var existingUser = await _userRepository.FindByIdAsync(id);
+            var existingRule = await _ruleRepository.FindByIdAsync(ruleId);
+
+            if (existingUser == null)
+                return new UserResponse("User not found.");
+
+            if (existingRule == null)
+                return new UserResponse("Rule not found.");
+
+            try
+            {
+                foreach (var item in existingUser.UserRules)
+                {
+                    if (item.RuleId == ruleId)
+                    {
+
+                        if (item.CoinsQuantity < existingRule.CoinsCapacity)
+                        {
+                            return new UserResponse("The coin quantity for this user's rule is lower than the coin capacity of the global rule.");
+                        }
+
+                        // TODO Check if already payed for this round
+
+                        item.nextPaymentDate = nextPaymentDate;
+                        _userRepository.Update(existingUser);
+                        await _unitOfWork.CompleteAsync();
+
+                        return new UserResponse(existingUser);
+                    }
+                }
+
+                return new UserResponse("User did not subscribed to this rule.");
+            }
+            catch (Exception ex)
+            {
+                // Do some logging stuff
+                return new UserResponse($"An error occurred when updating the user's rule: {ex.Message}");
             }
         }
 

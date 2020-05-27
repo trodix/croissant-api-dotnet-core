@@ -1,3 +1,5 @@
+using System;
+
 namespace CroissantApi.Models
 {
     public class UserRule
@@ -9,5 +11,7 @@ namespace CroissantApi.Models
         public Rule Rule { get; set; }
         
         public int CoinsQuantity { get; set; }
+
+        public DateTime? nextPaymentDate { get; set; }
     }
 }
