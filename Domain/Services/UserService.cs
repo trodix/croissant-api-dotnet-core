@@ -130,7 +130,7 @@ namespace CroissantApi.Services
                         {
                             // Reset the coin counter
                             item.CoinsQuantity = 0;
-                            item.nextPaymentDate = null;
+                            existingUser.nextPaymentDate = null;
                         }
                         
                         _userRepository.Update(existingUser);
@@ -151,40 +151,33 @@ namespace CroissantApi.Services
             }
         }
 
-        public async Task<UserResponse> UpdateNextPaymentDateAsync(int id, int ruleId, DateTime nextPaymentDate)
+        public async Task<UserResponse> UpdateNextPaymentDateAsync(int id, DateTime nextPaymentDate)
         {
             var existingUser = await _userRepository.FindByIdAsync(id);
-            var existingRule = await _ruleRepository.FindByIdAsync(ruleId);
 
             if (existingUser == null)
                 return new UserResponse("User not found.");
 
-            if (existingRule == null)
-                return new UserResponse("Rule not found.");
-
             try
             {
-                foreach (var item in existingUser.UserRules)
+                foreach (var userRule in existingUser.UserRules)
                 {
-                    if (item.RuleId == ruleId)
+                    foreach (var teamRule in existingUser.Team.TeamRules)
                     {
-
-                        if (item.CoinsQuantity < existingRule.CoinsCapacity)
+                        if (userRule.CoinsQuantity >= teamRule.Rule.CoinsCapacity)
                         {
-                            return new UserResponse("The coin quantity for this user's rule is lower than the coin capacity of the global rule.");
+                            // TODO Check if already payed for this round
+
+                            existingUser.nextPaymentDate = nextPaymentDate;
+                            _userRepository.Update(existingUser);
+                            await _unitOfWork.CompleteAsync();
+
+                            return new UserResponse(existingUser);
                         }
-
-                        // TODO Check if already payed for this round
-
-                        item.nextPaymentDate = nextPaymentDate;
-                        _userRepository.Update(existingUser);
-                        await _unitOfWork.CompleteAsync();
-
-                        return new UserResponse(existingUser);
                     }
                 }
 
-                return new UserResponse("User did not subscribed to this rule.");
+                return new UserResponse("None of the coin quantity for this user is full.");
             }
             catch (Exception ex)
             {

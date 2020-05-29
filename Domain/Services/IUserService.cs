@@ -13,7 +13,7 @@ namespace CroissantApi.Domain.Services
          Task<UserResponse> SaveAsync(User user);
          Task<UserResponse> UpdateAsync(int id, User user);
          Task<UserResponse> IncrementCoinQuantityAsync(int id, int ruleId);
-         Task<UserResponse> UpdateNextPaymentDateAsync(int id, int ruleId, DateTime nextPaymentDate);
+         Task<UserResponse> UpdateNextPaymentDateAsync(int id, DateTime nextPaymentDate);
          Task<UserResponse> DeleteAsync(int id);
     }
 }

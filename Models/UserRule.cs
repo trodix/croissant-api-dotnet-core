@@ -11,7 +11,5 @@ namespace CroissantApi.Models
         public Rule Rule { get; set; }
         
         public int CoinsQuantity { get; set; }
-
-        public DateTime? nextPaymentDate { get; set; }
     }
 }

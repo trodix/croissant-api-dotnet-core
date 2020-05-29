@@ -17,6 +17,8 @@ namespace CroissantApi.Models
 
         public DateTime BirthDate { get; set; }
 
+        public DateTime? nextPaymentDate { get; set; }
+
         public ICollection<UserRule> UserRules { get; set; }
 
     }

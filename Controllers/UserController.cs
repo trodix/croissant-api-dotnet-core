@@ -156,11 +156,11 @@ namespace CroissantApi.Controllers
         /// <summary>
         /// define the date for user to pay croissants. 
         /// </summary>
-        [HttpPut("{id}/rule/{ruleId}/payday")]
+        [HttpPut("{id}/payday")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutUserRuleNextPaymentDate(int id, int ruleId, [FromBody] UpdateNextPaymentDateResource resource)
+        public async Task<IActionResult> PutUserRuleNextPaymentDate(int id, [FromBody] UpdateNextPaymentDateResource resource)
         {
             if (!ModelState.IsValid)
             {
@@ -168,7 +168,7 @@ namespace CroissantApi.Controllers
             }
 
             var nextPaymentDate = resource.nextPaymentDate;
-            var result = await _userService.UpdateNextPaymentDateAsync(id, ruleId, nextPaymentDate);
+            var result = await _userService.UpdateNextPaymentDateAsync(id, nextPaymentDate);
 
             if (!result.Success)
             {

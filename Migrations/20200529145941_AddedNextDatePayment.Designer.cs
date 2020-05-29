@@ -3,15 +3,17 @@ using System;
 using CroissantApi.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CroissantApi.Migrations
 {
     [DbContext(typeof(CroissantContext))]
-    partial class CroissantContextModelSnapshot : ModelSnapshot
+    [Migration("20200529145941_AddedNextDatePayment")]
+    partial class AddedNextDatePayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,9 +76,6 @@ namespace CroissantApi.Migrations
                     b.Property<int>("TeamId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("nextPaymentDate")
-                        .HasColumnType("timestamp without time zone");
-
                     b.HasKey("Id");
 
                     b.HasIndex("TeamId");
@@ -94,6 +93,9 @@ namespace CroissantApi.Migrations
 
                     b.Property<int>("CoinsQuantity")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("nextPaymentDate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("UserId", "RuleId");
 
