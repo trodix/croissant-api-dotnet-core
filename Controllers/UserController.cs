@@ -178,5 +178,26 @@ namespace CroissantApi.Controllers
             var userResource = _mapper.Map<User, UserResource>(result.User);
             return Ok(userResource);
         }
+
+        /// <summary>
+        /// Reset the coin quantity of a user
+        /// This will create a new payment record for the user
+        /// </summary>
+        [HttpPut("{id}/reset")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutNewPayment(int id)
+        {
+            var result = await _userService.ResetCoinQuantityAsync(id);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            var userResource = _mapper.Map<User, UserResource>(result.User);
+            return Ok(userResource);
+        }
     }
 }

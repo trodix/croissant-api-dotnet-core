@@ -166,15 +166,59 @@ namespace CroissantApi.Services
                     {
                         if (userRule.CoinsQuantity >= teamRule.Rule.CoinsCapacity)
                         {
-                            // TODO Check if already payed for this round
-
                             existingUser.nextPaymentDate = nextPaymentDate;
+
                             _userRepository.Update(existingUser);
                             await _unitOfWork.CompleteAsync();
 
                             return new UserResponse(existingUser);
                         }
                     }
+                }
+
+                return new UserResponse("None of the coin quantity for this user is full.");
+            }
+            catch (Exception ex)
+            {
+                // Do some logging stuff
+                return new UserResponse($"An error occurred when updating the user's rule: {ex.Message}");
+            }
+        }
+
+        public async Task<UserResponse> ResetCoinQuantityAsync(int id)
+        {
+            var existingUser = await _userRepository.FindByIdAsync(id);
+            var isUpdatedPaymentRecords = false;
+
+            if (existingUser == null)
+                return new UserResponse("User not found.");
+
+            try
+            {
+                foreach (var userRule in existingUser.UserRules)
+                {
+                    foreach (var teamRule in existingUser.Team.TeamRules)
+                    {
+                        if (userRule.RuleId == teamRule.RuleId)
+                        {
+                            if (userRule.CoinsQuantity >= teamRule.Rule.CoinsCapacity)
+                            {
+                                userRule.CoinsQuantity = 0;
+                                existingUser.nextPaymentDate = null;
+
+                                _userRepository.Update(existingUser);
+                                await _unitOfWork.CompleteAsync();
+
+                                // TODO Create a new payment record
+                                isUpdatedPaymentRecords = true;
+                            }
+                        }
+                    }
+                }
+
+                if (isUpdatedPaymentRecords == true)
+                {
+                    return new UserResponse(existingUser);
                 }
 
                 return new UserResponse("None of the coin quantity for this user is full.");
