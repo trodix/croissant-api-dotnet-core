@@ -14,13 +14,15 @@ namespace CroissantApi.Services
         private readonly IRuleRepository _ruleRepository;
         private readonly ITeamRepository _teamRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPaymentRecordService _paymentRecordService;
 
-        public UserService(IUserRepository userRepository, IRuleRepository ruleRepository, ITeamRepository teamRepository, IUnitOfWork unitOfWork)
+        public UserService(IUserRepository userRepository, IRuleRepository ruleRepository, ITeamRepository teamRepository, IUnitOfWork unitOfWork, IPaymentRecordService paymentRecordService)
         {
             this._userRepository = userRepository;
             this._ruleRepository = ruleRepository;
             this._teamRepository = teamRepository;
             this._unitOfWork = unitOfWork;
+            this._paymentRecordService = paymentRecordService;
         }
 
         public async Task<IEnumerable<User>> ListAsync()
@@ -79,11 +81,12 @@ namespace CroissantApi.Services
             existingUser.BirthDate = user.BirthDate;
             existingUser.Team = existingTeam;
 
-            if (existingUser.TeamId != existingTeam.Id) {
+            if (existingUser.TeamId != existingTeam.Id)
+            {
                 // Update the UserRules if the Team change
                 existingUser.UserRules = CreateRulesFromTeam(user, existingTeam);
             }
-            
+
 
             try
             {
@@ -114,7 +117,7 @@ namespace CroissantApi.Services
             {
                 foreach (var item in existingUser.UserRules)
                 {
-                    if (item.RuleId == ruleId) 
+                    if (item.RuleId == ruleId)
                     {
                         // Increment the coin counter
                         item.CoinsQuantity += 1;
@@ -132,7 +135,7 @@ namespace CroissantApi.Services
                             item.CoinsQuantity = 0;
                             existingUser.nextPaymentDate = null;
                         }
-                        
+
                         _userRepository.Update(existingUser);
                         await _unitOfWork.CompleteAsync();
 
@@ -203,14 +206,28 @@ namespace CroissantApi.Services
                         {
                             if (userRule.CoinsQuantity >= teamRule.Rule.CoinsCapacity)
                             {
+                                DateTime payedAt = DateTime.Now;
+
+                                if (existingUser.nextPaymentDate != null && DateTime.Now.CompareTo(existingUser.nextPaymentDate) > 0)
+                                {
+                                    payedAt = (DateTime)existingUser.nextPaymentDate;
+                                }
+
+                                PaymentRecord paymentRecord = new PaymentRecord
+                                {
+                                    UserRule = userRule,
+                                    PayedAt = payedAt
+                                };
+
+                                await _paymentRecordService.SaveAsync(paymentRecord);
+                                isUpdatedPaymentRecords = true;
+
+
                                 userRule.CoinsQuantity = 0;
-                                existingUser.nextPaymentDate = null;
+                                existingUser.nextPaymentDate = GetNextBirthdayDate(existingUser);
 
                                 _userRepository.Update(existingUser);
                                 await _unitOfWork.CompleteAsync();
-
-                                // TODO Create a new payment record
-                                isUpdatedPaymentRecords = true;
                             }
                         }
                     }
@@ -257,10 +274,23 @@ namespace CroissantApi.Services
 
             foreach (var teamRule in team.TeamRules)
             {
-                user.UserRules.Add(new UserRule{User = user, Rule = teamRule.Rule});
+                user.UserRules.Add(new UserRule { User = user, Rule = teamRule.Rule });
             }
 
             return user.UserRules;
+        }
+
+        /// <summary>
+        /// Get the next birthday date for a user
+        /// </summary>
+        private DateTime GetNextBirthdayDate(User user)
+        {
+            DateTime nextBirthDayDate = new DateTime(DateTime.Now.Year, user.BirthDate.Month, user.BirthDate.Day);
+
+            if (nextBirthDayDate.CompareTo(DateTime.Now) < 0)
+                nextBirthDayDate = nextBirthDayDate.AddYears(1);
+
+            return nextBirthDayDate;
         }
     }
 }

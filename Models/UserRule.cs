@@ -1,5 +1,3 @@
-using System;
-
 namespace CroissantApi.Models
 {
     public class UserRule

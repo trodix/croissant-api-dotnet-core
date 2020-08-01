@@ -1,29 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+
 using AutoMapper;
 using CroissantApi.Domain.Repositories;
 using CroissantApi.Domain.Services;
-using CroissantApi.Models;
 using CroissantApi.Persistence.Context;
 using CroissantApi.Persistence.Repositories;
 using CroissantApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Supermarket.API.Extensions;
-using CroissantApi.Persistence.Seed;
 
 namespace CroissantApi
 {
@@ -61,11 +50,13 @@ namespace CroissantApi
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
-            services.AddScoped<IRuleRepository,RuleRepository>();
+            services.AddScoped<IRuleRepository, RuleRepository>();
+            services.AddScoped<IPaymentRecordRepository, PaymentRecordRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IRuleService, RuleService>();
+            services.AddScoped<IPaymentRecordService, PaymentRecordService>();
             
 
             // Register the Swagger generator, defining 1 or more Swagger documents

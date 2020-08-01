@@ -10,6 +10,7 @@ namespace CroissantApi.Persistence.Context
         public DbSet<UserRule> UserRules { get; set; }
         public DbSet<TeamRule> TeamRules { get; set; }
         public DbSet<Rule> Rules { get; set; }
+        public DbSet<PaymentRecord> PaymentRecords { get; set; }
 
         public CroissantContext(DbContextOptions<CroissantContext> options) : base(options)
         {
@@ -30,6 +31,10 @@ namespace CroissantApi.Persistence.Context
                 .HasOne<Team>(u => u.Team)
                 .WithMany(t => t.Users)
                 .HasForeignKey(u => u.TeamId);
+
+            modelBuilder
+                .Entity<PaymentRecord>()
+                .HasKey(pr => new { pr.UserRuleId });
         }
     }
 }
