@@ -5,6 +5,7 @@ namespace CroissantApi.Persistence.Context
 {
     public class CroissantContext : DbContext
     {
+        public DbSet<AuthenticatedUser> AuthenticatedUsers { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserRule> UserRules { get; set; }

@@ -1,14 +1,15 @@
 using CroissantApi.Persistence.Context;
 using CroissantApi.Models;
+using System;
 
 namespace CroissantApi.Persistence.Seed
 {
     public class AppSeed : ISeed<CroissantContext>
     {
         private readonly CroissantContext _context;
-        public AppSeed(CroissantContext contect)
+        public AppSeed(CroissantContext context)
         {
-            _context = contect;
+            _context = context;
         }
 
         public CroissantContext GetContext()
@@ -19,12 +20,29 @@ namespace CroissantApi.Persistence.Seed
         public void LoadSeeds()
         {
             MakeSeeds();
-            _context.SaveChanges();
+
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception error)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Can't seed the database. Error message: {error.Message}");
+                Console.ResetColor();
+            }
         }
 
         private void MakeSeeds()
         {
             _context.Database.EnsureCreated();
+
+            AuthenticatedUser authenticatedUser = _context.AuthenticatedUsers.Add(new AuthenticatedUser() {
+                FirstName = "Super",
+                LastName = "Admin",
+                Username = "superadmin",
+                Password = "superadmin"
+            }).Entity;
 
             Rule r1 = _context.Rules.Add(new Rule() { 
                 Id = 1,

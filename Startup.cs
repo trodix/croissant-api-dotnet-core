@@ -1,16 +1,22 @@
 
+using System;
+using System.Text;
 using AutoMapper;
 using CroissantApi.Domain.Repositories;
 using CroissantApi.Domain.Services;
+using CroissantApi.Helpers;
 using CroissantApi.Persistence.Context;
 using CroissantApi.Persistence.Repositories;
+using CroissantApi.Persistence.Seed;
 using CroissantApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Supermarket.API.Extensions;
 
@@ -57,6 +63,7 @@ namespace CroissantApi
             services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IRuleService, RuleService>();
             services.AddScoped<IPaymentRecordService, PaymentRecordService>();
+            services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
             
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -76,6 +83,32 @@ namespace CroissantApi
                         ;
                     }
                 );
+            });
+
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    ClockSkew = TimeSpan.Zero
+                };
             });
 
         }
@@ -98,13 +131,13 @@ namespace CroissantApi
             {
                 app.UseDeveloperExceptionPage();
 
-                // using (var scope = app.ApplicationServices.CreateScope())
-                // {
-                //     var ctx = scope.ServiceProvider.GetService<CroissantContext>();
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var ctx = scope.ServiceProvider.GetService<CroissantContext>();
 
-                //     AppSeed SeedBuilder = new AppSeed(ctx);
-                //     SeedBuilder.LoadSeeds();
-                // }
+                    AppSeed SeedBuilder = new AppSeed(ctx);
+                    SeedBuilder.LoadSeeds();
+                }
              }
 
             // app.UseHttpsRedirection();
@@ -113,12 +146,13 @@ namespace CroissantApi
 
             // app.UseCors(); // Not working without the lines bellow...
             app.UseCors(
-                options => options.SetIsOriginAllowed(x => _ = true)
+                options => options.SetIsOriginAllowed(origin => true)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
             );
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

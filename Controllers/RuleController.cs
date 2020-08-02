@@ -8,9 +8,11 @@ using CroissantApi.Extensions;
 using CroissantApi.Domain.Services;
 using Microsoft.AspNetCore.Http;
 using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CroissantApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
