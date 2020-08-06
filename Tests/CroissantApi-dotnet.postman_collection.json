@@ -1,0 +1,1177 @@
+{
+	"info": {
+		"_postman_id": "67e36994-66fe-469a-8547-5a0928581788",
+		"name": "CroissantApi-dotnet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Authenticate - ADMIN",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f15c128-34f8-414f-bccb-9760b26186a0",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = JSON.parse(responseBody);",
+									"",
+									"pm.environment.set(\"token_admin\", data.jwtToken);",
+									"pm.environment.set(\"refresh_token_admin\", data.refreshToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"sebastien@trodix.com\",\n    \"password\": \"@superadmin**2020\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}/authentication/authenticate",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"authentication",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate - USER",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1042bf8d-e5a9-41b1-ad6c-b7cc98732ad0",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = JSON.parse(responseBody);",
+									"",
+									"pm.environment.set(\"token_user\", data.jwtToken);",
+									"pm.environment.set(\"refresh_token_user\", data.refreshToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"sebastien.vallet@viacesi.fr\",\n    \"password\": \"@password**2020\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}/authentication/authenticate",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"authentication",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "USER - Get all AuthenticatedUsers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f452c06e-7808-4133-84a0-74a41a53760e",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_user}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}/authentication",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"authentication"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Role Admin",
+			"item": [
+				{
+					"name": "AuthenticatedUsers",
+					"item": [
+						{
+							"name": "Get all AuthenticatedUsers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "313fc085-17ab-4356-807a-26c404fd8cfa",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/authentication",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"authentication"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Teams",
+					"item": [
+						{
+							"name": "get all teams",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "2a8c0a18-af23-4c29-ab36-3ff06214499e",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/team",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"team"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one team",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "2a8c0a18-af23-4c29-ab36-3ff06214499e",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/team/1",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"team",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create a team",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7446cfe2-9e99-49c8-95d3-0b5b8130f559",
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"The postman team\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/team",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"team"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update a team",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "b0404f3a-d747-4d35-9757-83418a9afbf8",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"The postman team updated\",\n\t\"teamRules\": [\n\t\t{ \n\t\t\t\"ruleId\": 2\n\t\t}\n\t]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/team/2",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"team",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "get all users",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cb6eefdd-c724-47e6-ad40-696f75033e99",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/user",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d8895040-88f9-49bd-8a63-02b8f25f31c9",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/user/2",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create a user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "18e7c14b-cc70-41be-bdea-cf15259a3561",
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"lastname\": \"Postman Boby\",\n\t\"firstname\": \"Boby\",\n\t\"birthDate\": \"2001-04-13\",\n\t\"teamId\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/user",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update a user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7053b80a-9650-4e25-90b3-15036dc914f3",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"teamId\": 1,\n    \"lastname\": \"Bayon\",\n    \"firstname\": \"Sylvain\",\n    \"birthDate\": \"1981-09-12\",\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/user/2",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update coin quantity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ab4b186c-3875-476d-b688-9917c55ccca3",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/user/4/rule/1/increment",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user",
+										"4",
+										"rule",
+										"1",
+										"increment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update the nextPaymentDate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "02fdb7a0-0f71-4d81-a3c8-fec682651291",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"nextPaymentDate\": \"2020-08-25\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/user/2/payday",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user",
+										"2",
+										"payday"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Rules",
+					"item": [
+						{
+							"name": "get all rules",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3abf760c-358b-4369-ab6d-8b6b7df0d8f5",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/rule",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"rule"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one rules",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "173b2ddf-b402-4785-b1ba-e3fd13a8a379",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/rule/1",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"rule",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token_admin}}",
+						"type": "string"
+					}
+				]
+			},
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Role User",
+			"item": [
+				{
+					"name": "AuthenticatedUsers",
+					"item": [
+						{
+							"name": "Get all AuthenticatedUsers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "fa9c6c99-6464-4998-9f77-2ae19119141d",
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/authentication",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"authentication"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Teams",
+					"item": [
+						{
+							"name": "get all teams",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "76fc5b39-9d58-479f-ba4b-b9119ea5411c",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/team",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"team"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one team",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e5f43f53-b65f-4c9a-8112-3b8e9eb768d3",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/team/1",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"team",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create a team",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "b730d7a0-dd6e-42d1-ae30-4c199b7d8f2a",
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"The postman team\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/team",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"team"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update a team",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7fafd392-f916-47ee-84de-854daa842eba",
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"The postman team updated\",\n\t\"teamRules\": [\n\t\t{ \n\t\t\t\"ruleId\": 2\n\t\t}\n\t]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/team/2",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"team",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "get all users",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "1c97c93e-c8e4-4792-b5c7-89cb49a1c70d",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/user",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9766dc7d-7799-489d-9769-e0621ae169d5",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/user/2",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create a user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ea486b8c-73fe-41e7-b383-bdc0add9c960",
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"lastname\": \"Postman Boby\",\n\t\"firstname\": \"Boby\",\n\t\"birthDate\": \"2001-04-13\",\n\t\"teamId\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/user",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update a user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "393ecea7-3c24-4717-a4f9-9ca549821b44",
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"teamId\": 1,\n    \"lastname\": \"Bayon\",\n    \"firstname\": \"Sylvain\",\n    \"birthDate\": \"1981-09-12\",\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/user/2",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update coin quantity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "13eef929-d8f1-4667-87a3-57cd695fbf2c",
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/user/4/rule/1/increment",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user",
+										"4",
+										"rule",
+										"1",
+										"increment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update the nextPaymentDate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3e229c2a-2395-4511-9895-8a20169c5958",
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"nextPaymentDate\": \"2020-08-25\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiUrl}}/user/2/payday",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"user",
+										"2",
+										"payday"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Rules",
+					"item": [
+						{
+							"name": "get all rules",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "483be793-d635-41a0-9466-647fd4d489fc",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/rule",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"rule"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one rules",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e0051621-417d-4531-8a8e-29283b2500e7",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/rule/1",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"rule",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token_user}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ea1a5541-eee4-4cc0-96db-c6c4104b6c9e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b1975be3-b1ff-4072-a412-07fbb9f73d17",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

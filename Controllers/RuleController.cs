@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CroissantApi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, User")]
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
@@ -62,6 +62,7 @@ namespace CroissantApi.Controllers
         /// <summary>
         /// update a rule. 
         /// </summary>
+        [Authorize(Roles = Role.Admin)]
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -88,6 +89,7 @@ namespace CroissantApi.Controllers
         /// <summary>
         /// Create a rule. 
         /// </summary>
+        [Authorize(Roles = Role.Admin)]
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -114,6 +116,7 @@ namespace CroissantApi.Controllers
         /// <summary>
         /// Delete a rule. 
         /// </summary>
+        [Authorize(Roles = Role.Admin)]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

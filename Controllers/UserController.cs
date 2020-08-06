@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CroissantApi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, User")]
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
@@ -63,6 +63,7 @@ namespace CroissantApi.Controllers
         /// <summary>
         /// update a user. 
         /// </summary>
+        [Authorize(Roles = Role.Admin)]
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -89,6 +90,7 @@ namespace CroissantApi.Controllers
         /// <summary>
         /// Create a user. 
         /// </summary>
+        [Authorize(Roles = Role.Admin)]
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -115,6 +117,7 @@ namespace CroissantApi.Controllers
         /// <summary>
         /// Delete a user. 
         /// </summary>
+        [Authorize(Roles = Role.Admin)]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -133,6 +136,7 @@ namespace CroissantApi.Controllers
         /// <summary>
         /// increment the user's rule coin quantity. 
         /// </summary>
+        [Authorize(Roles = Role.Admin)]
         [HttpPut("{id}/rule/{ruleId}/increment")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -158,6 +162,7 @@ namespace CroissantApi.Controllers
         /// <summary>
         /// define the date for user to pay croissants. 
         /// </summary>
+        [Authorize(Roles = Role.Admin)]
         [HttpPut("{id}/payday")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -185,6 +190,7 @@ namespace CroissantApi.Controllers
         /// Reset the coin quantity of a user
         /// This will create a new payment record for the user
         /// </summary>
+        [Authorize(Roles = Role.Admin)]
         [HttpPut("{id}/reset")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
