@@ -37,11 +37,21 @@ namespace CroissantApi.Persistence.Seed
         {
             _context.Database.EnsureCreated();
 
-            AuthenticatedUser authenticatedUser = _context.AuthenticatedUsers.Add(new AuthenticatedUser() {
+            AuthenticatedUser authenticatedUser1 = _context.AuthenticatedUsers.Add(new AuthenticatedUser() {
                 FirstName = "Super",
                 LastName = "Admin",
-                Username = "superadmin",
-                Password = "superadmin"
+                Username = "sebastien@trodix.com",
+                Password = "@superadmin**2020",
+                Role = Role.Admin
+            }).Entity;
+
+
+            AuthenticatedUser authenticatedUser2 = _context.AuthenticatedUsers.Add(new AuthenticatedUser() {
+                FirstName = "sebastien",
+                LastName = "vallet",
+                Username = "sebastien.vallet@viacesi.fr",
+                Password = "@password**2020",
+                Role = Role.User
             }).Entity;
 
             Rule r1 = _context.Rules.Add(new Rule() { 

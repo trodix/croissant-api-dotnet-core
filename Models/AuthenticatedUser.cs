@@ -13,6 +13,8 @@ namespace CroissantApi.Models
         [JsonIgnore]
         public string Password { get; set; }
 
+        public string Role { get; set; }
+
         [JsonIgnore]
         public List<RefreshToken> RefreshTokens { get; set; }
     }

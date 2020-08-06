@@ -75,6 +75,7 @@ namespace CroissantApi.Controllers
             return Ok(new { message = "Token revoked" });
         }
 
+        [Authorize(Roles = Role.Admin)]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult GetAll()
