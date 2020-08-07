@@ -180,6 +180,70 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get one AuthenticatedUser own",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "0b67b590-f4f3-4a59-8204-c297fc4856f3",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/authentication/1",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"authentication",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get one AuthenticatedUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "70b6a7d3-3bd0-4551-a68b-1dd764fed456",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/authentication/2",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"authentication",
+										"2"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -679,6 +743,70 @@
 									],
 									"path": [
 										"authentication"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get one AuthenticatedUser own",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4357e311-63e9-47b6-96a7-6f1420df4303",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/authentication/2",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"authentication",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get one AuthenticatedUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "b184bc8f-908c-4c17-bb10-da3379c5ae87",
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{apiUrl}}/authentication/1",
+									"host": [
+										"{{apiUrl}}"
+									],
+									"path": [
+										"authentication",
+										"1"
 									]
 								}
 							},

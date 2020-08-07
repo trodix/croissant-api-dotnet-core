@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using CroissantApi.Services;
+using CroissantApi.Helpers;
 using CroissantApi.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using CroissantApi.Resources;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Security.Claims;
 
 namespace CroissantApi.Controllers
 {
@@ -81,7 +84,7 @@ namespace CroissantApi.Controllers
         public ActionResult GetAll()
         {
             var users =  _authenticationService.List();
-            return Ok(users);
+            return Ok(ExtensionMethods.WithoutPasswords(users));
         }
 
         [HttpGet("{id}")]
@@ -89,10 +92,18 @@ namespace CroissantApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult GetById(int id)
         {
+            var authenticatedUserId = int.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value);
+            var authenticatedUserRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+
+            if (authenticatedUserRole != Role.Admin)
+            {
+                if (authenticatedUserId != id) return Forbid();
+            }
+
             var user =  _authenticationService.Find(id);
             if (user == null) return NotFound();
 
-            return Ok(user);
+            return Ok(ExtensionMethods.WithoutPassword(user));
         }
 
         [HttpGet("{id}/refresh-tokens")]

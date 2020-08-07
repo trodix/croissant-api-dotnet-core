@@ -1,6 +1,7 @@
 using CroissantApi.Persistence.Context;
 using CroissantApi.Models;
 using System;
+using BC = BCrypt.Net.BCrypt;
 
 namespace CroissantApi.Persistence.Seed
 {
@@ -41,7 +42,7 @@ namespace CroissantApi.Persistence.Seed
                 FirstName = "Super",
                 LastName = "Admin",
                 Username = "sebastien@trodix.com",
-                Password = "@superadmin**2020",
+                Password = BC.HashPassword("@superadmin**2020"),
                 Role = Role.Admin
             }).Entity;
 
@@ -50,7 +51,7 @@ namespace CroissantApi.Persistence.Seed
                 FirstName = "sebastien",
                 LastName = "vallet",
                 Username = "sebastien.vallet@viacesi.fr",
-                Password = "@password**2020",
+                Password = BC.HashPassword("@password**2020"),
                 Role = Role.User
             }).Entity;
 

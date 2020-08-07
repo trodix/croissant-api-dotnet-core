@@ -11,6 +11,7 @@ using CroissantApi.Models;
 using CroissantApi.Resources;
 using CroissantApi.Persistence.Context;
 using CroissantApi.Helpers;
+using BC = BCrypt.Net.BCrypt;
 
 namespace CroissantApi.Services
 {
@@ -27,10 +28,10 @@ namespace CroissantApi.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
         {
-            AuthenticatedUser user =  _context.AuthenticatedUsers.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+            AuthenticatedUser user =  _context.AuthenticatedUsers.SingleOrDefault(x => x.Username == model.Username);
 
-            // return null if user not found
-            if (user == null) return null;
+            // return null if user not found or wrong password
+            if (user == null || !BC.Verify(model.Password, user.Password)) return null;
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = generateJwtToken(user);
