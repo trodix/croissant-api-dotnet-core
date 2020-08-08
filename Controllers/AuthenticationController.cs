@@ -45,13 +45,18 @@ namespace CroissantApi.Controllers
         [HttpPost("refresh-token")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult RefreshToken()
+        public ActionResult RefreshToken([FromBody] RefreshTokenRequest model)
         {
-            var refreshToken = Request.Cookies["refreshToken"];
+            // accept refreshToken from request body or cookie
+            var refreshToken = model.RefreshToken ?? Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
+                return BadRequest(new { message = "Refresh token is required" });
+
             var response =  _authenticationService.RefreshToken(refreshToken, ipAddress());
 
             if (response == null)
-                return Unauthorized(new { message = "Invalid token" });
+                return Unauthorized(new { message = "Invalid refresh token" });
 
             setTokenCookie(response.RefreshToken);
 

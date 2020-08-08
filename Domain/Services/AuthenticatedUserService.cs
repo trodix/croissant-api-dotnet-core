@@ -41,6 +41,8 @@ namespace CroissantApi.Services
             user.RefreshTokens.Add(refreshToken);
             _context.Update(user);
 
+            _context.SaveChanges();
+
             return new AuthenticateResponse(user, jwtToken, refreshToken.Token);
         }
 
@@ -64,6 +66,8 @@ namespace CroissantApi.Services
             user.RefreshTokens.Add(newRefreshToken);
             _context.Update(user);
 
+            _context.SaveChanges();
+
             // generate new jwt
             var jwtToken = generateJwtToken(user);
 
@@ -86,6 +90,8 @@ namespace CroissantApi.Services
             refreshToken.Revoked = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
             _context.Update(user);
+
+            _context.SaveChanges();
 
             return true;
         }

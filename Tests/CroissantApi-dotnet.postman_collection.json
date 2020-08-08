@@ -140,6 +140,52 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Refresh token USER",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8a3f2ff8-b8dc-4443-8d8a-987bea5c675d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var data = JSON.parse(responseBody);",
+									"",
+									"pm.environment.set(\"token_user\", data.jwtToken);",
+									"pm.environment.set(\"refresh_token_user\", data.refreshToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refresh_token_user}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}/authentication/refresh-token",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"authentication",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
